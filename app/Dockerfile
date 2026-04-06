@@ -7,6 +7,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ffmpeg \
         libsndfile1 \
+        build-essential \
+        pkg-config \
+        libavformat-dev \
+        libavcodec-dev \
+        libavdevice-dev \
+        libavutil-dev \
+        libswresample-dev \
+        libswscale-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
