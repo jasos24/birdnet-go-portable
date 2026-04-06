@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build: ./app
+    container_name: birdnet_pwa_app
+    environment:
+      - AUDIO_FIFO=/audio/in.pcm
+    volumes:
+      - ./audio:/audio
+    expose:
+      - "5000"
+
+  birdnet_go:
+    image: ${BIRDNET_GO_IMAGE}
+    container_name: birdnet_go
+    restart: unless-stopped
+    devices:
+      - /dev/snd:/dev/snd
+    volumes:
+      - ./birdnet-go/config:/config
+      - ./birdnet-go/data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    depends_on:
+      - app
