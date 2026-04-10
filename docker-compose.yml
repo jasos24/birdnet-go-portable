@@ -1,26 +1,41 @@
 version: "3.9"
 
 services:
-  app:
-    build: ./app
-    container_name: birdnet_pwa_app
-    environment:
-      - AUDIO_FIFO=/audio/in.pcm
-    volumes:
-      - ./audio:/audio
-    expose:
-      - "5000"
-
-  birdnet_go:
-    image: ${BIRDNET_GO_IMAGE}
-    container_name: birdnet_go
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: mediamtx
     restart: unless-stopped
-    devices:
-      - /dev/snd:/dev/snd
     volumes:
-      - ./birdnet-go/config:/config
-      - ./birdnet-go/data:/data
-    environment:
-      - TZ=${TZ:-UTC}
+      - ./mediamtx/mediamtx.yml:/mediamtx.yml
+    ports:
+      - "8554:8554"   # RTSP
+      - "1935:1935"   # RTMP
+      - "9838:8888"   # Web UI
+
+  birdnetgo:
+    image: ghcr.io/tphakala/birdnet-go:latest
+    container_name: birdnetgo
+    restart: unless-stopped
     depends_on:
-      - app
+      - mediamtx
+    volumes:
+      - ./birdnet/birdnet-config.json:/config.json
+    environment:
+      - RTSP_USER=${RTSP_USER}
+      - RTSP_PASS=${RTSP_PASS}
+    ports:
+      - "9839:8080"
+
+  birdcall:
+    build: ./birdcall
+    container_name: birdcall
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - RTMP_URL=${RTMP_URL}
+      - RTSP_USER=${RTSP_USER}
+      - RTSP_PASS=${RTSP_PASS}
+      - BOT_NAME=${BOT_NAME}
+      - BOT_AVATAR_PATH=${BOT_AVATAR_PATH}
+    depends_on:
+      - mediamtx
