@@ -1,0 +1,7 @@
+rtmp: yes
+
+paths:
+  birdmic:
+    source: publisher
+    readUser: ${RTSP_USER}
+    readPass: ${RTSP_PASS}
