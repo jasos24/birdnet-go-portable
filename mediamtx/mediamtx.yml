@@ -1,7 +1,33 @@
-rtmp: yes
+logLevel: info
+
+rtsp:
+  enabled: yes
+  listenIP: 0.0.0.0
+  port: 8554
+  readUser: ${RTSP_USER}
+  readPass: ${RTSP_PASS}
+  publishUser: ${RTSP_USER}
+  publishPass: ${RTSP_PASS}
+
+rtmp:
+  enabled: yes
+  listenIP: 0.0.0.0
+  port: 1935
+
+api:
+  enabled: yes
+  listen: :9090
 
 paths:
+
+  birdcall:
+    source: publisher
+    sourceOnDemand: no
+
   birdmic:
     source: publisher
+    sourceOnDemand: no
     readUser: ${RTSP_USER}
     readPass: ${RTSP_PASS}
+    publishUser: ${RTSP_USER}
+    publishPass: ${RTSP_PASS}
